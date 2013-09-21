@@ -40,32 +40,25 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    var count: Int = 0
-
-    def countChangeIter(remain: Int, coins: List[Int]): Unit = {
-      if (remain <= 0 || coins.isEmpty) /* nothing to do */ count = count + 0
-      else countCoin(remain, 0, coins.head, coins.tail)
+    def countChangeIter(remain: Int, coins: List[Int], count: Int): Int = {
+      if (remain <= 0 || coins.isEmpty) /* nothing to do */ count
+      else countCoin(remain, 0, coins.head, coins.tail, count)
     }
-    def countCoin(remain: Int, headCount: Int, head: Int, tail: List[Int]): Unit = {
+    def countCoin(remain: Int, headCount: Int, head: Int, tail: List[Int], count: Int): Int = {
       if (headCount * head == remain) {
         /* count increment condition is met */
-        count = count + 1
-
         /* proceed with more coins */
-        countCoin(remain, headCount + 1, head, tail)
+        countCoin(remain, headCount + 1, head, tail, 
+          count + 1)
       } else if (headCount * head < remain) {
-        /* continue condition */
-        countChangeIter(remain - headCount * head, tail)
-
-        /* proceed with more coins */
-        countCoin(remain, headCount + 1, head, tail)
-      }
+        /* continue condition is met */ 
+        /* proceed with the tail and more coins */
+        countCoin(remain, headCount + 1, head, tail, 
+          countChangeIter(remain - headCount * head, tail, count))
+      }else count
     }
-
     /* start process */
-    countChangeIter(money, coins)
-
-    count
+    countChangeIter(money, coins, 0)
   }
 
 }
